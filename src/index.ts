@@ -1,10 +1,13 @@
 import express from 'express'; 
-import {AddressInfo} from "net";
+import {AddressInfo} from 'net';
+import { userRouter } from './router/UserRouter';
 
 const app = express();
 app.use(express.json());
 
 export default app;
+
+app.use("/users", userRouter);
 
 const server = app.listen(3000, () => {
     if (server) {
