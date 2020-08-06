@@ -1,4 +1,5 @@
 import { UserDataBase } from '../data/UserDataBase';
+import { CpfDataBase } from '../data/CpfDataBase';
 import { HashGenerator } from '../services/hashGenerator';
 import { TokenGenerator } from '../services/tokenGenerator';
 import { IdGenerator } from '../services/idGenerator';
@@ -11,7 +12,8 @@ export class UserBusiness {
         private userDataBase: UserDataBase,
         private hashGenerator: HashGenerator,
         private tokenGenerator: TokenGenerator,
-        private idGenerator: IdGenerator
+        private idGenerator: IdGenerator,
+        private cpfDataBase: CpfDataBase,
     ){}
 
     public async signUp(email: string, password: string) {
@@ -40,5 +42,28 @@ export class UserBusiness {
         const token = this.tokenGenerator.generate({id})
 
         return {token}
+    }
+
+    public async addCpf(token: string, cpf: string) {
+        const idUserLogged = this.tokenGenerator.verify(token);
+
+        if (!token || !cpf) {
+            throw new InvalidParameterError("Missing Input");
+        }
+
+        const verifyCpfExists = await this.cpfDataBase.findUserByCpf(cpf);
+
+        if (verifyCpfExists) {
+            await this.cpfDataBase.updateCpf(cpf);
+        } 
+
+        if (!verifyCpfExists) {
+            const user = new User(idUserLogged)
+    
+            user.setCpf(cpf)
+    
+            await this.cpfDataBase.addCpf(user);
+        }
+
     }
 }
