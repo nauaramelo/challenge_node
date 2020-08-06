@@ -31,5 +31,5 @@ export class UserDataBase extends BaseDataBase {
           SELECT * from ${this.tableName} WHERE email = '${email}'
           `);
         return this.toModel(result[0][0]);
-      }
+    }
 }
