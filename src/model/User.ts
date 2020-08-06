@@ -6,6 +6,7 @@ export class User {
         private cpf?: string,
         private fullName?: string,
         private birthday?: string,
+        private phoneNumber?: string
     ) {}
 
     public getId(): string {
@@ -42,5 +43,13 @@ export class User {
 
     public setBirthday(birthday: string): void {
         this.birthday = birthday
+    }
+
+    public getPhoneNumber(): string | undefined {
+        return this.phoneNumber
+    }
+
+    public setPhoneNumber(phoneNumber: string): void {
+        this.phoneNumber = phoneNumber
     }
 }
