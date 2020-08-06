@@ -8,6 +8,8 @@ import { InvalidParameterError } from '../errors/InvalidParameterError';
 import { ConflitError } from '../errors/ConflitError';
 import { User } from '../model/User';
 import { BirthdayDataBase } from '../data/BirthdayDataBase';
+import { PhoneNumberDataBase } from '../data/PhoneNumberDataBase';
+import { userRouter } from '../router/UserRouter';
 
 export class UserBusiness {
     constructor(
@@ -17,7 +19,8 @@ export class UserBusiness {
         private idGenerator: IdGenerator,
         private cpfDataBase: CpfDataBase,
         private fullNameDataBase: FullNameDataBase,
-        private birthdayDatabase: BirthdayDataBase
+        private birthdayDatabase: BirthdayDataBase,
+        private phoneNumbeDatabase: PhoneNumberDataBase
     ){}
 
     public async signUp(email: string, password: string) {
@@ -111,6 +114,28 @@ export class UserBusiness {
             user.setBirthday(birthday)
 
             await this.birthdayDatabase.addBirthday(user)
+        }
+    }
+
+    public async addPhoneNumber(token: string, phoneNumber: string) {
+
+        if (!token || !phoneNumber) {
+            throw new InvalidParameterError("Missing Input")
+        }
+
+        const idUserLogged = this.tokenGenerator.verify(token);
+        const verifyPhoneNumberExists = await this.phoneNumbeDatabase.findUserByPhoneNumber(phoneNumber)
+
+        if (verifyPhoneNumberExists) {
+            await this.phoneNumbeDatabase.updatePhoneNumber(phoneNumber)
+        }
+
+        if (!verifyPhoneNumberExists) {
+            const user = new User(idUserLogged)
+
+            user.setPhoneNumber(phoneNumber)
+
+            await this.phoneNumbeDatabase.addPhoneNumber(user)
         }
     }
 }

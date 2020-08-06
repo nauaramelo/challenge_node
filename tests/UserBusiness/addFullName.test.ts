@@ -10,6 +10,7 @@ describe("Testing UserBusiness.addFullName", () => {
   let cpfDatabase = {};
   let fullNameDatabase = {};
   let birthdayDatabase = {};
+  let phoneNumberDatabase = {}
  
   test("Should return 'Missing input' for empty token", async () => {
     expect.assertions(2); 
@@ -21,7 +22,8 @@ describe("Testing UserBusiness.addFullName", () => {
         idGenerator as any,
         cpfDatabase as any,
         fullNameDatabase as any,
-        birthdayDatabase as any
+        birthdayDatabase as any,
+        phoneNumberDatabase as any
       );
 
       await userBusiness.addFullName("", "João das Neves");
@@ -34,17 +36,18 @@ describe("Testing UserBusiness.addFullName", () => {
   test("Should return 'Missing Input' for empty fullName", async () => {
     expect.assertions(2); 
     try {
-        const userBusiness = new UserBusiness(
+      const userBusiness = new UserBusiness(
         userDatabase as any,
         hashGenerator as any,
         tokenGenerator as any,
         idGenerator as any,
         cpfDatabase as any,
         fullNameDatabase as any,
-        birthdayDatabase as any
-        );
+        birthdayDatabase as any,
+        phoneNumberDatabase as any
+      );
 
-        await userBusiness.addFullName("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
+      await userBusiness.addFullName("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
     } catch (err) {
         expect(err.errorCode).toBe(422);
         expect(err.message).toBe("Missing Input");
@@ -68,7 +71,8 @@ describe("Testing UserBusiness.addFullName", () => {
       idGenerator as any,
       cpfDatabase as any,
       fullNameDatabase as any,
-      birthdayDatabase as any
+      birthdayDatabase as any,
+      phoneNumberDatabase as any
     );
 
     const result = await userBusiness.addFullName(
@@ -103,7 +107,8 @@ describe("Testing UserBusiness.addFullName", () => {
       idGenerator as any,
       cpfDatabase as any,
       fullNameDatabase as any,
-      birthdayDatabase as any
+      birthdayDatabase as any,
+      phoneNumberDatabase as any
     );
 
     const fullName = "João das Neves"

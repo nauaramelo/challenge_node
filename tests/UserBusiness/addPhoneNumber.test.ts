@@ -2,7 +2,7 @@ import { UserBusiness } from "../../src/business/UserBusiness";
 import { User } from "../../src/model/User";
 
 
-describe("Testing UserBusiness.addBirthday", () => {
+describe("Testing UserBusiness.addPhoneNumber", () => {
   let userDatabase = {};
   let hashGenerator = {};
   let tokenGenerator = {};
@@ -26,14 +26,14 @@ describe("Testing UserBusiness.addBirthday", () => {
         phoneNumberDatabase as any
       );
 
-      await userBusiness.addBirthday("", "01/10/1991");
+      await userBusiness.addPhoneNumber("", "(11) 999998888");
     } catch (err) {
       expect(err.errorCode).toBe(422); 
       expect(err.message).toBe("Missing Input");
     }
   }) 
 
-  test("Should return 'Missing Input' for empty birthday", async () => {
+   test("Should return 'Missing Input' for empty phone number", async () => {
     expect.assertions(2); 
     try {
       const userBusiness = new UserBusiness(
@@ -47,23 +47,23 @@ describe("Testing UserBusiness.addBirthday", () => {
         phoneNumberDatabase as any
       );
 
-      await userBusiness.addBirthday("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
+      await userBusiness.addPhoneNumber("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
       
     } catch (err) {
         expect(err.errorCode).toBe(422);
         expect(err.message).toBe("Missing Input");
     }
-  }) 
+  })  
 
-  test("Should add Birthday", async () => {
+  test("Should add Phone Number", async () => {
 
     const tokenVerify = jest.fn((token: string) => "id")
     tokenGenerator = { verify: tokenVerify };
 
-    const findUserByBirthday = jest.fn((birthday: string) => {});
-    const addBirthday = jest.fn((user: User) => {});
+    const findUserByPhoneNumber = jest.fn((phoneNumber: string) => {});
+    const addPhoneNumber = jest.fn((user: User) => {});
 
-    birthdayDatabase = { findUserByBirthday, addBirthday};
+    phoneNumberDatabase = { findUserByPhoneNumber, addPhoneNumber};
 
     const userBusiness = new UserBusiness(
       userDatabase as any,
@@ -76,17 +76,17 @@ describe("Testing UserBusiness.addBirthday", () => {
       phoneNumberDatabase as any
     );
 
-    const result = await userBusiness.addBirthday(
+    const result = await userBusiness.addPhoneNumber(
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC",
-      "01/10/1991"
+      "(11) 999998888"
     );
 
     const user = new User("id");
-    user.setBirthday("01/10/1991");
+    user.setPhoneNumber("(11) 999998888");
 
     expect(tokenVerify).toHaveBeenCalledWith("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC");
-    expect(findUserByBirthday).toHaveBeenCalledWith("01/10/1991");
-    expect(addBirthday).toHaveBeenCalledWith(
+    expect(findUserByPhoneNumber).toHaveBeenCalledWith("(11) 999998888");
+    expect(addPhoneNumber).toHaveBeenCalledWith(
       user
     );
   });
@@ -96,10 +96,10 @@ describe("Testing UserBusiness.addBirthday", () => {
     const tokenVerify = jest.fn((token: string) => "id")
     tokenGenerator = { verify: tokenVerify };
 
-    const findUserByBirthday = jest.fn((birthday: string) => new User("id"));
-    const updateBirthday = jest.fn((birthday: string) => {});
+    const findUserByPhoneNumber = jest.fn((phoneNumber: string) => new User("id"));
+    const updatePhoneNumber = jest.fn((phoneNumber: string) => {});
 
-    birthdayDatabase = { findUserByBirthday, updateBirthday };
+    phoneNumberDatabase = { findUserByPhoneNumber, updatePhoneNumber };
 
     const userBusiness = new UserBusiness(
       userDatabase as any,
@@ -113,15 +113,15 @@ describe("Testing UserBusiness.addBirthday", () => {
     );
 
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC"
-    const birthday = "01/10/1991"
+    const phoneNumber = "(11) 999998888"
 
-    const result = await userBusiness.addBirthday(
+    const result = await userBusiness.addPhoneNumber(
       token,
-      birthday
+      phoneNumber
     );
 
     expect(tokenVerify).toHaveBeenCalledWith(token);
-    expect(findUserByBirthday).toHaveBeenCalledWith(birthday);
-    expect(updateBirthday).toHaveBeenCalledWith(birthday);
-  });  
+    expect(findUserByPhoneNumber).toHaveBeenCalledWith(phoneNumber);
+    expect(updatePhoneNumber).toHaveBeenCalledWith(phoneNumber);
+  });   
 })
