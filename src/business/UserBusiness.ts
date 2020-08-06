@@ -7,6 +7,7 @@ import { IdGenerator } from '../services/idGenerator';
 import { InvalidParameterError } from '../errors/InvalidParameterError';
 import { ConflitError } from '../errors/ConflitError';
 import { User } from '../model/User';
+import { BirthdayDataBase } from '../data/BirthdayDataBase';
 
 export class UserBusiness {
     constructor(
@@ -15,7 +16,8 @@ export class UserBusiness {
         private tokenGenerator: TokenGenerator,
         private idGenerator: IdGenerator,
         private cpfDataBase: CpfDataBase,
-        private fullNameDataBase: FullNameDataBase
+        private fullNameDataBase: FullNameDataBase,
+        private birthdayDatabase: BirthdayDataBase
     ){}
 
     public async signUp(email: string, password: string) {
@@ -87,6 +89,28 @@ export class UserBusiness {
             user.setFullName(fullName)
 
             await this.fullNameDataBase.addFullName(user)
+        }
+    }
+
+    public async addBirthday(token: string, birthday: string) {
+
+        if (!token || !birthday) {
+            throw new InvalidParameterError("Missing Input")
+        }
+
+        const idUserLogged = this.tokenGenerator.verify(token);
+        const verifyBirthdayExists = await this.birthdayDatabase.findUserByBirthday(birthday)
+
+        if (verifyBirthdayExists) {
+            await this.birthdayDatabase.updateBirthday(birthday)
+        }
+
+        if (!verifyBirthdayExists) {
+            const user = new User(idUserLogged)
+
+            user.setBirthday(birthday)
+
+            await this.birthdayDatabase.addBirthday(user)
         }
     }
 }
