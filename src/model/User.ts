@@ -3,7 +3,8 @@ export class User {
         private id: string,
         private email?: string,
         private password?: string,
-        private cpf?: string
+        private cpf?: string,
+        private fullName?: string
     ) {}
 
     public getId(): string {
@@ -24,5 +25,13 @@ export class User {
 
     public setCpf(cpf: string): void {
         this.cpf = cpf;
+    }
+
+    public getFullName(): string | undefined {
+        return this.fullName
+    }
+
+    public setFullName(fullName: string): void {
+        this.fullName = fullName
     }
 }
