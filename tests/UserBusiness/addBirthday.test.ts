@@ -1,14 +1,15 @@
 import { UserBusiness } from "../../src/business/UserBusiness";
 import { User } from "../../src/model/User";
 
-describe("Testing UserBusiness.addCpf", () => {
+
+describe("Testing UserBusiness.addBirthday", () => {
   let userDatabase = {};
   let hashGenerator = {};
   let tokenGenerator = {};
   let idGenerator = {};
   let cpfDatabase = {};
   let fullNameDatabase = {};
-  let birthdayDatabase = {}
+  let birthdayDatabase = {};
  
   test("Should return 'Missing input' for empty token", async () => {
     expect.assertions(2); 
@@ -23,17 +24,17 @@ describe("Testing UserBusiness.addCpf", () => {
         birthdayDatabase as any
       );
 
-      await userBusiness.addCpf("", "123.456.789-12");
+      await userBusiness.addBirthday("", "01/10/1991");
     } catch (err) {
       expect(err.errorCode).toBe(422); 
       expect(err.message).toBe("Missing Input");
     }
   }) 
 
-  test("Should return 'Missing Input' for empty cpf", async () => {
+  test("Should return 'Missing Input' for empty birthday", async () => {
     expect.assertions(2); 
     try {
-        const userBusiness = new UserBusiness(
+      const userBusiness = new UserBusiness(
         userDatabase as any,
         hashGenerator as any,
         tokenGenerator as any,
@@ -41,24 +42,25 @@ describe("Testing UserBusiness.addCpf", () => {
         cpfDatabase as any,
         fullNameDatabase as any,
         birthdayDatabase as any
-        );
+      );
 
-        await userBusiness.addCpf("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
+      await userBusiness.addBirthday("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
+      
     } catch (err) {
         expect(err.errorCode).toBe(422);
         expect(err.message).toBe("Missing Input");
     }
   }) 
 
-  test("Should add cpf", async () => {
+  test("Should add Birthday", async () => {
 
     const tokenVerify = jest.fn((token: string) => "id")
     tokenGenerator = { verify: tokenVerify };
 
-    const findUserByCpf = jest.fn((cpf: string) => {});
-    const addCpf = jest.fn((user: User) => {});
+    const findUserByBirthday = jest.fn((birthday: string) => {});
+    const addBirthday = jest.fn((user: User) => {});
 
-    cpfDatabase = { findUserByCpf, addCpf};
+    birthdayDatabase = { findUserByBirthday, addBirthday};
 
     const userBusiness = new UserBusiness(
       userDatabase as any,
@@ -70,17 +72,17 @@ describe("Testing UserBusiness.addCpf", () => {
       birthdayDatabase as any
     );
 
-    const result = await userBusiness.addCpf(
+    const result = await userBusiness.addBirthday(
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC",
-      "123.456.789-12"
+      "01/10/1991"
     );
 
     const user = new User("id");
-    user.setCpf("123.456.789-12");
+    user.setBirthday("01/10/1991");
 
     expect(tokenVerify).toHaveBeenCalledWith("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC");
-    expect(findUserByCpf).toHaveBeenCalledWith("123.456.789-12");
-    expect(addCpf).toHaveBeenCalledWith(
+    expect(findUserByBirthday).toHaveBeenCalledWith("01/10/1991");
+    expect(addBirthday).toHaveBeenCalledWith(
       user
     );
   });
@@ -90,10 +92,10 @@ describe("Testing UserBusiness.addCpf", () => {
     const tokenVerify = jest.fn((token: string) => "id")
     tokenGenerator = { verify: tokenVerify };
 
-    const findUserByCpf = jest.fn((cpf: string) => new User("id"));
-    const updateCpf = jest.fn((cpf: string) => {});
+    const findUserByBirthday = jest.fn((birthday: string) => new User("id"));
+    const updateBirthday = jest.fn((birthday: string) => {});
 
-    cpfDatabase = { findUserByCpf, updateCpf };
+    birthdayDatabase = { findUserByBirthday, updateBirthday };
 
     const userBusiness = new UserBusiness(
       userDatabase as any,
@@ -105,16 +107,16 @@ describe("Testing UserBusiness.addCpf", () => {
       birthdayDatabase as any
     );
 
-    const cpf = "123.456.789-12"
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC"
+    const birthday = "01/10/1991"
 
-    const result = await userBusiness.addCpf(
+    const result = await userBusiness.addBirthday(
       token,
-      cpf
+      birthday
     );
 
     expect(tokenVerify).toHaveBeenCalledWith(token);
-    expect(findUserByCpf).toHaveBeenCalledWith(cpf);
-    expect(updateCpf).toHaveBeenCalledWith(cpf);
-  });
+    expect(findUserByBirthday).toHaveBeenCalledWith(birthday);
+    expect(updateBirthday).toHaveBeenCalledWith(birthday);
+  });  
 })

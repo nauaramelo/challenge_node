@@ -9,6 +9,7 @@ describe("Testing UserBusiness.addFullName", () => {
   let idGenerator = {};
   let cpfDatabase = {};
   let fullNameDatabase = {};
+  let birthdayDatabase = {};
  
   test("Should return 'Missing input' for empty token", async () => {
     expect.assertions(2); 
@@ -19,7 +20,8 @@ describe("Testing UserBusiness.addFullName", () => {
         tokenGenerator as any,
         idGenerator as any,
         cpfDatabase as any,
-        fullNameDatabase as any
+        fullNameDatabase as any,
+        birthdayDatabase as any
       );
 
       await userBusiness.addFullName("", "João das Neves");
@@ -38,7 +40,8 @@ describe("Testing UserBusiness.addFullName", () => {
         tokenGenerator as any,
         idGenerator as any,
         cpfDatabase as any,
-        fullNameDatabase as any
+        fullNameDatabase as any,
+        birthdayDatabase as any
         );
 
         await userBusiness.addFullName("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
@@ -64,7 +67,8 @@ describe("Testing UserBusiness.addFullName", () => {
       tokenGenerator as any,
       idGenerator as any,
       cpfDatabase as any,
-      fullNameDatabase as any
+      fullNameDatabase as any,
+      birthdayDatabase as any
     );
 
     const result = await userBusiness.addFullName(
@@ -98,7 +102,8 @@ describe("Testing UserBusiness.addFullName", () => {
       tokenGenerator as any,
       idGenerator as any,
       cpfDatabase as any,
-      fullNameDatabase as any
+      fullNameDatabase as any,
+      birthdayDatabase as any
     );
 
     const fullName = "João das Neves"

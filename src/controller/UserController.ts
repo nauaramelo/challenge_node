@@ -6,6 +6,7 @@ import { HashGenerator } from "../services/hashGenerator";
 import { IdGenerator } from "../services/idGenerator";
 import { CpfDataBase } from "../data/CpfDataBase";
 import { FullNameDataBase } from "../data/FullNameDataBase";
+import { BirthdayDataBase } from "../data/BirthdayDataBase";
 
 export class UserController {
   private static UserBusiness = new UserBusiness(
@@ -14,7 +15,8 @@ export class UserController {
     new TokenGenerator(),
     new IdGenerator(),
     new CpfDataBase(),
-    new FullNameDataBase()
+    new FullNameDataBase(),
+    new BirthdayDataBase()
   );
 
   public async signUp(req: Request, res: Response) {
@@ -56,6 +58,19 @@ export class UserController {
       )
 
       res.status(200).send({ message: "Operation performed successfully"});
+    } catch (err) {
+      res.status(err.errorCode || 400).send({ message: err.message})
+    }
+  }
+
+  public async addBirthday(req: Request, res: Response) {
+    try {
+      const result = await UserController.UserBusiness.addBirthday(
+        req.body.token,
+        req.body.birthday
+      )
+
+      res.status(200).send({ message: "Operation performed successfully"})
     } catch (err) {
       res.status(err.errorCode || 400).send({ message: err.message})
     }
