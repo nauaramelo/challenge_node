@@ -8,6 +8,7 @@ describe("Testing UserBusiness.addCpf", () => {
   let idGenerator = {};
   let cpfDatabase = {};
   let fullNameDatabase = {};
+  let birthdayDatabase = {}
  
   test("Should return 'Missing input' for empty token", async () => {
     expect.assertions(2); 
@@ -18,7 +19,8 @@ describe("Testing UserBusiness.addCpf", () => {
         tokenGenerator as any,
         idGenerator as any,
         cpfDatabase as any,
-        fullNameDatabase as any
+        fullNameDatabase as any,
+        birthdayDatabase as any
       );
 
       await userBusiness.addCpf("", "123.456.789-12");
@@ -37,7 +39,8 @@ describe("Testing UserBusiness.addCpf", () => {
         tokenGenerator as any,
         idGenerator as any,
         cpfDatabase as any,
-        fullNameDatabase as any
+        fullNameDatabase as any,
+        birthdayDatabase as any
         );
 
         await userBusiness.addCpf("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
@@ -63,7 +66,8 @@ describe("Testing UserBusiness.addCpf", () => {
       tokenGenerator as any,
       idGenerator as any,
       cpfDatabase as any,
-      fullNameDatabase as any
+      fullNameDatabase as any,
+      birthdayDatabase as any
     );
 
     const result = await userBusiness.addCpf(
@@ -97,7 +101,8 @@ describe("Testing UserBusiness.addCpf", () => {
       tokenGenerator as any,
       idGenerator as any,
       cpfDatabase as any,
-      fullNameDatabase as any
+      fullNameDatabase as any,
+      birthdayDatabase as any
     );
 
     const cpf = "123.456.789-12"
