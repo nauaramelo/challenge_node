@@ -7,6 +7,7 @@ describe("Testing UserBusiness.signup", () => {
   let tokenGenerator = {};
   let idGenerator = {};
   let cpfDatabase = {};
+  let fullNameDatabase = {}
 
   test("Should return 'Missing input' for empty email", async () => {
     expect.assertions(2);
@@ -16,7 +17,8 @@ describe("Testing UserBusiness.signup", () => {
         hashGenerator as any,
         tokenGenerator as any,
         idGenerator as any,
-        cpfDatabase as any
+        cpfDatabase as any,
+        fullNameDatabase as any
       );
 
       await userBusiness.signUp("", "123456");
@@ -34,7 +36,8 @@ describe("Testing UserBusiness.signup", () => {
         hashGenerator as any,
         tokenGenerator as any,
         idGenerator as any,
-        cpfDatabase as any
+        cpfDatabase as any,
+        fullNameDatabase as any
       );
 
       await userBusiness.signUp("joaodasneves@gmail.com", "",);
@@ -52,7 +55,8 @@ describe("Testing UserBusiness.signup", () => {
         hashGenerator as any,
         tokenGenerator as any,
         idGenerator as any,
-        cpfDatabase as any
+        cpfDatabase as any,
+        fullNameDatabase as any
       );
 
       await userBusiness.signUp(
@@ -86,7 +90,8 @@ describe("Testing UserBusiness.signup", () => {
       hashGenerator as any,
       tokenGenerator as any,
       idGenerator as any,
-      cpfDatabase as any
+      cpfDatabase as any,
+      fullNameDatabase as any
     );
 
     const result = await userBusiness.signUp(

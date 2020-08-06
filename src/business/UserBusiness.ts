@@ -1,5 +1,6 @@
 import { UserDataBase } from '../data/UserDataBase';
 import { CpfDataBase } from '../data/CpfDataBase';
+import { FullNameDataBase } from '../data/FullNameDataBase';
 import { HashGenerator } from '../services/hashGenerator';
 import { TokenGenerator } from '../services/tokenGenerator';
 import { IdGenerator } from '../services/idGenerator';
@@ -14,6 +15,7 @@ export class UserBusiness {
         private tokenGenerator: TokenGenerator,
         private idGenerator: IdGenerator,
         private cpfDataBase: CpfDataBase,
+        private fullNameDataBase: FullNameDataBase
     ){}
 
     public async signUp(email: string, password: string) {
@@ -63,6 +65,28 @@ export class UserBusiness {
             user.setCpf(cpf)
     
             await this.cpfDataBase.addCpf(user);
+        }
+    }
+
+    public async addFullName(token: string, fullName: string) {
+
+        if (!token || !fullName){
+            throw new InvalidParameterError("Missing Input")
+        }
+
+        const idUserLogged = this.tokenGenerator.verify(token);
+        const verifyFullNameExists = await this.fullNameDataBase.findUserByFullName(fullName)
+
+        if (verifyFullNameExists) {
+            await this.fullNameDataBase.updateFullName(fullName)
+        }
+
+        if (!verifyFullNameExists) {
+            const user = new User(idUserLogged)
+
+            user.setFullName(fullName)
+
+            await this.fullNameDataBase.addFullName(user)
         }
     }
 }

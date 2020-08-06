@@ -1,7 +1,8 @@
 import { UserBusiness } from "../../src/business/UserBusiness";
 import { User } from "../../src/model/User";
 
-describe("Testing UserBusiness.addCpf", () => {
+
+describe("Testing UserBusiness.addFullName", () => {
   let userDatabase = {};
   let hashGenerator = {};
   let tokenGenerator = {};
@@ -21,14 +22,14 @@ describe("Testing UserBusiness.addCpf", () => {
         fullNameDatabase as any
       );
 
-      await userBusiness.addCpf("", "123.456.789-12");
+      await userBusiness.addFullName("", "João das Neves");
     } catch (err) {
       expect(err.errorCode).toBe(422); 
       expect(err.message).toBe("Missing Input");
     }
   }) 
 
-  test("Should return 'Missing Input' for empty cpf", async () => {
+  test("Should return 'Missing Input' for empty fullName", async () => {
     expect.assertions(2); 
     try {
         const userBusiness = new UserBusiness(
@@ -40,22 +41,22 @@ describe("Testing UserBusiness.addCpf", () => {
         fullNameDatabase as any
         );
 
-        await userBusiness.addCpf("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
+        await userBusiness.addFullName("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
     } catch (err) {
         expect(err.errorCode).toBe(422);
         expect(err.message).toBe("Missing Input");
     }
   }) 
 
-  test("Should add cpf", async () => {
+  test("Should add fullName", async () => {
 
     const tokenVerify = jest.fn((token: string) => "id")
     tokenGenerator = { verify: tokenVerify };
 
-    const findUserByCpf = jest.fn((cpf: string) => {});
-    const addCpf = jest.fn((user: User) => {});
+    const findUserByFullName = jest.fn((fullName: string) => {});
+    const addFullName = jest.fn((user: User) => {});
 
-    cpfDatabase = { findUserByCpf, addCpf};
+    fullNameDatabase = { findUserByFullName, addFullName};
 
     const userBusiness = new UserBusiness(
       userDatabase as any,
@@ -66,17 +67,17 @@ describe("Testing UserBusiness.addCpf", () => {
       fullNameDatabase as any
     );
 
-    const result = await userBusiness.addCpf(
+    const result = await userBusiness.addFullName(
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC",
-      "123.456.789-12"
+      "João das Neves"
     );
 
     const user = new User("id");
-    user.setCpf("123.456.789-12");
+    user.setFullName("João das Neves");
 
     expect(tokenVerify).toHaveBeenCalledWith("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC");
-    expect(findUserByCpf).toHaveBeenCalledWith("123.456.789-12");
-    expect(addCpf).toHaveBeenCalledWith(
+    expect(findUserByFullName).toHaveBeenCalledWith("João das Neves");
+    expect(addFullName).toHaveBeenCalledWith(
       user
     );
   });
@@ -86,10 +87,10 @@ describe("Testing UserBusiness.addCpf", () => {
     const tokenVerify = jest.fn((token: string) => "id")
     tokenGenerator = { verify: tokenVerify };
 
-    const findUserByCpf = jest.fn((cpf: string) => new User("id"));
-    const updateCpf = jest.fn((cpf: string) => {});
+    const findUserByFullName = jest.fn((fullName: string) => new User("id"));
+    const updateFullName = jest.fn((fullName: string) => {});
 
-    cpfDatabase = { findUserByCpf, updateCpf };
+    fullNameDatabase = { findUserByFullName, updateFullName };
 
     const userBusiness = new UserBusiness(
       userDatabase as any,
@@ -100,16 +101,16 @@ describe("Testing UserBusiness.addCpf", () => {
       fullNameDatabase as any
     );
 
-    const cpf = "123.456.789-12"
+    const fullName = "João das Neves"
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC"
 
-    const result = await userBusiness.addCpf(
+    const result = await userBusiness.addFullName(
       token,
-      cpf
+      fullName
     );
 
     expect(tokenVerify).toHaveBeenCalledWith(token);
-    expect(findUserByCpf).toHaveBeenCalledWith(cpf);
-    expect(updateCpf).toHaveBeenCalledWith(cpf);
-  });
+    expect(findUserByFullName).toHaveBeenCalledWith(fullName);
+    expect(updateFullName).toHaveBeenCalledWith(fullName);
+  }); 
 })
