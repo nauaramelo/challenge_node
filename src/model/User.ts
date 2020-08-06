@@ -4,7 +4,8 @@ export class User {
         private email?: string,
         private password?: string,
         private cpf?: string,
-        private fullName?: string
+        private fullName?: string,
+        private birthday?: string,
     ) {}
 
     public getId(): string {
@@ -33,5 +34,13 @@ export class User {
 
     public setFullName(fullName: string): void {
         this.fullName = fullName
+    }
+
+    public getBirthday(): string | undefined {
+        return this.birthday
+    }
+
+    public setBirthday(birthday: string): void {
+        this.birthday = birthday
     }
 }
