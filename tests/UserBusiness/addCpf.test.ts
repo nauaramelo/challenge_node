@@ -8,7 +8,8 @@ describe("Testing UserBusiness.addCpf", () => {
   let idGenerator = {};
   let cpfDatabase = {};
   let fullNameDatabase = {};
-  let birthdayDatabase = {}
+  let birthdayDatabase = {};
+  let phoneNumberDatabase = {};
  
   test("Should return 'Missing input' for empty token", async () => {
     expect.assertions(2); 
@@ -20,7 +21,8 @@ describe("Testing UserBusiness.addCpf", () => {
         idGenerator as any,
         cpfDatabase as any,
         fullNameDatabase as any,
-        birthdayDatabase as any
+        birthdayDatabase as any,
+        phoneNumberDatabase as any
       );
 
       await userBusiness.addCpf("", "123.456.789-12");
@@ -33,17 +35,18 @@ describe("Testing UserBusiness.addCpf", () => {
   test("Should return 'Missing Input' for empty cpf", async () => {
     expect.assertions(2); 
     try {
-        const userBusiness = new UserBusiness(
+      const userBusiness = new UserBusiness(
         userDatabase as any,
         hashGenerator as any,
         tokenGenerator as any,
         idGenerator as any,
         cpfDatabase as any,
         fullNameDatabase as any,
-        birthdayDatabase as any
-        );
+        birthdayDatabase as any,
+        phoneNumberDatabase as any
+      );
 
-        await userBusiness.addCpf("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
+      await userBusiness.addCpf("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
     } catch (err) {
         expect(err.errorCode).toBe(422);
         expect(err.message).toBe("Missing Input");
@@ -67,7 +70,8 @@ describe("Testing UserBusiness.addCpf", () => {
       idGenerator as any,
       cpfDatabase as any,
       fullNameDatabase as any,
-      birthdayDatabase as any
+      birthdayDatabase as any,
+      phoneNumberDatabase as any
     );
 
     const result = await userBusiness.addCpf(
@@ -102,7 +106,8 @@ describe("Testing UserBusiness.addCpf", () => {
       idGenerator as any,
       cpfDatabase as any,
       fullNameDatabase as any,
-      birthdayDatabase as any
+      birthdayDatabase as any,
+      phoneNumberDatabase as any
     );
 
     const cpf = "123.456.789-12"
