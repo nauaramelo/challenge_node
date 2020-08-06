@@ -45,12 +45,12 @@ export class UserBusiness {
     }
 
     public async addCpf(token: string, cpf: string) {
-        const idUserLogged = this.tokenGenerator.verify(token);
-
+        
         if (!token || !cpf) {
             throw new InvalidParameterError("Missing Input");
         }
-
+        
+        const idUserLogged = this.tokenGenerator.verify(token);
         const verifyCpfExists = await this.cpfDataBase.findUserByCpf(cpf);
 
         if (verifyCpfExists) {
@@ -64,6 +64,5 @@ export class UserBusiness {
     
             await this.cpfDataBase.addCpf(user);
         }
-
     }
 }
