@@ -9,6 +9,7 @@ import { FullNameDataBase } from "../data/FullNameDataBase";
 import { BirthdayDataBase } from "../data/BirthdayDataBase";
 import { PhoneNumberDataBase } from "../data/PhoneNumberDataBase";
 import { AddressDataBase } from "../data/AdressDataBase";
+import { AmountRequestedDataBase } from "../data/AmountRequested";
 
 export class UserController {
   private static UserBusiness = new UserBusiness(
@@ -20,7 +21,8 @@ export class UserController {
     new FullNameDataBase(),
     new BirthdayDataBase(),
     new PhoneNumberDataBase(),
-    new AddressDataBase()
+    new AddressDataBase(),
+    new AmountRequestedDataBase()
   );
 
   public async signUp(req: Request, res: Response) {
@@ -101,6 +103,20 @@ export class UserController {
       )
 
       res.status(200).send({ message: "Operation performed successfully"})
+    } catch (err) {
+      res.status(err.errorCode || 400).send({ message: err.message})
+    }
+  }
+
+  public async addAmountRequested(req: Request, res: Response) {
+    try {
+      const result = await UserController.UserBusiness.addAmountRequest(
+        req.body.token,
+        req.body.amountRequested
+      )
+
+      res.status(200).send({ message: "Operation performed successfully"})
+
     } catch (err) {
       res.status(err.errorCode || 400).send({ message: err.message})
     }

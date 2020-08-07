@@ -46,3 +46,11 @@ CREATE TABLE UserAddress(
     PRIMARY KEY(cep, street, number, complement, city, state),
 	FOREIGN KEY (id_user) REFERENCES Users(id)
 );
+
+CREATE TABLE UserAmountRequested(
+    amount_requested FLOAT, 
+    id_user VARCHAR(255),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(amount_requested, id_user),
+    FOREIGN KEY (id_user) REFERENCES Users(id)
+);
