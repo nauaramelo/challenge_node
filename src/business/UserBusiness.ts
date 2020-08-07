@@ -160,10 +160,30 @@ export class UserBusiness {
             throw new GenericError("Invalid CEP")
         }
 
+        if (address.state.length > 2) {
+            throw new GenericError("Invalid format, the state must have two characters")
+        }
+
         const responseWsCep = await axios.get(`http://viacep.com.br/ws/${address.cep}/json/`)
 
         if (responseWsCep.data.erro) {
             throw new NotFoundError("CEP not exist")
+        }
+
+        if (responseWsCep.data.cep != address.cep) {
+            throw new NotFoundError("CEP not found")
+        }
+
+        if (responseWsCep.data.logradouro != address.street) {
+            throw new GenericError("Invalid Street")
+        }
+
+        if (responseWsCep.data.localidade != address.city) {
+            throw new NotFoundError("City not found")
+        }
+
+        if (responseWsCep.data.uf != address.state){
+            throw new NotFoundError("State not found")
         }
 
         const idUserLogged = this.tokenGenerator.verify(token);
