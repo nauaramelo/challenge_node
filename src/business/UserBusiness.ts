@@ -12,6 +12,10 @@ import { PhoneNumberDataBase } from '../data/PhoneNumberDataBase';
 import { AddressDataBase } from '../data/AdressDataBase';
 import { userRouter } from '../router/UserRouter';
 import { AddressInterface } from '../interfaces/AddressInterface';
+import axios from 'axios';
+import { NotFoundError } from '../errors/NotFoundError';
+import { GenericError } from '../errors/GenericError';
+import { validate } from 'gerador-validador-cpf'
 
 export class UserBusiness {
     constructor(
@@ -58,6 +62,10 @@ export class UserBusiness {
         
         if (!token || !cpf) {
             throw new InvalidParameterError("Missing Input");
+        }
+
+        if (!validate(cpf)) {
+            throw new GenericError("Invalid CPF")
         }
         
         const idUserLogged = this.tokenGenerator.verify(token);
@@ -148,14 +156,24 @@ export class UserBusiness {
             throw new InvalidParameterError("Missing Input")
         }
 
-        const idUserLogged = this.tokenGenerator.verify(token);
-        const verifyAdressExists = await this.addressDatabase.findUserByAddress(address)
+        if (address.cep.length > 8) {
+            throw new GenericError("Invalid CEP")
+        }
 
-        if (verifyAdressExists) {
+        const responseWsCep = await axios.get(`http://viacep.com.br/ws/${address.cep}/json/`)
+
+        if (responseWsCep.data.erro) {
+            throw new NotFoundError("CEP not exist")
+        }
+
+        const idUserLogged = this.tokenGenerator.verify(token);
+        const hasUserRegistred = await this.addressDatabase.findUserByAddress(address)
+
+        if (hasUserRegistred) {
             await this.addressDatabase.updateAddress(address)
         }
 
-        if (!verifyAdressExists) {
+        if (!hasUserRegistred) {
             await this.addressDatabase.addAddress(idUserLogged, address)
         }
         
