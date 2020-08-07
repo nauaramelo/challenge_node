@@ -1,7 +1,6 @@
 import { BaseDataBase } from './BaseDataBase';
 import { User } from '../model/User';
 import moment from 'moment';
-import { Address } from '../model/Address';
 import { AddressInterface } from '../interfaces/AddressInterface';
 
 export class AddressDataBase extends BaseDataBase {
