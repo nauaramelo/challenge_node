@@ -9,7 +9,10 @@ import { ConflitError } from '../errors/ConflitError';
 import { User } from '../model/User';
 import { BirthdayDataBase } from '../data/BirthdayDataBase';
 import { PhoneNumberDataBase } from '../data/PhoneNumberDataBase';
+import { AddressDataBase } from '../data/AdressDataBase';
 import { userRouter } from '../router/UserRouter';
+import { AddressInterface } from '../interfaces/AddressInterface';
+import { Address } from '../model/Address';
 
 export class UserBusiness {
     constructor(
@@ -20,7 +23,8 @@ export class UserBusiness {
         private cpfDataBase: CpfDataBase,
         private fullNameDataBase: FullNameDataBase,
         private birthdayDatabase: BirthdayDataBase,
-        private phoneNumbeDatabase: PhoneNumberDataBase
+        private phoneNumbeDatabase: PhoneNumberDataBase,
+        private addressDatabase: AddressDataBase
     ){}
 
     public async signUp(email: string, password: string) {
@@ -137,5 +141,24 @@ export class UserBusiness {
 
             await this.phoneNumbeDatabase.addPhoneNumber(user)
         }
+    }
+
+    public async addAddress(token: string, address: AddressInterface) {
+
+        if (!token || !address.cep || !address.street || !address.number || !address.complement || !address.city || !address.state) {
+            throw new InvalidParameterError("Missing Input")
+        }
+
+        const idUserLogged = this.tokenGenerator.verify(token);
+        const verifyAdressExists = await this.addressDatabase.findUserByAddress(address)
+
+        if (verifyAdressExists) {
+            await this.addressDatabase.updateAddress(address)
+        }
+
+        if (!verifyAdressExists) {
+            await this.addressDatabase.addAddress(idUserLogged, address)
+        }
+        
     }
 }
