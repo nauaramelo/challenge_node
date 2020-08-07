@@ -41,7 +41,7 @@ describe("Testing UserBusiness.addAddress", () => {
         state: "Rio de Janeiro",
         city: "Rio de Janeiro",
         street: "Rua Amarela",
-        cep: 123546454,
+        cep: "12345678",
         complement: "Pé de jambo no quintal"
     } as AddressInterface
 

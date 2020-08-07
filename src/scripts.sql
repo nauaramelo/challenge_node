@@ -35,7 +35,7 @@ CREATE TABLE UserPhoneNumber(
 );
 
 CREATE TABLE UserAddress(
-	cep INT,
+	cep VARCHAR(255),
 	street VARCHAR(255),
 	number INT, 
 	complement VARCHAR(255),
