@@ -1,5 +1,5 @@
 export interface AddressInterface {
-    cep: number,
+    cep: string,
     street: string,
     number: number,
     complement: string,
