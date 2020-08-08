@@ -34,6 +34,7 @@ export class CpfDataBase extends BaseDataBase {
 
             return this.toModel(result[0][0])
     }
+
     public async updateCpf(cpf: string): Promise<void> {
         await super.getConnection().raw(`
             UPDATE ${this.tableName} SET updated_at = '${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE CPF = '${cpf}'
