@@ -10,7 +10,10 @@ describe("Testing UserBusiness.addCpf", () => {
   let fullNameDatabase = {};
   let birthdayDatabase = {};
   let phoneNumberDatabase = {};
-  let addressDatabase = {}
+  let addressDatabase = {};
+  let amountRequestedDatabase = {};
+  let endPointDataBase = {};
+  let endpointOrderDatabase = {}
  
   test("Should return 'Missing input' for empty token", async () => {
     expect.assertions(2); 
@@ -24,10 +27,13 @@ describe("Testing UserBusiness.addCpf", () => {
         fullNameDatabase as any,
         birthdayDatabase as any,
         phoneNumberDatabase as any,
-        addressDatabase as any
+        addressDatabase as any,
+        amountRequestedDatabase as any,
+        endPointDataBase as any,
+        endpointOrderDatabase as any
       );
 
-      await userBusiness.addCpf("", "123.456.789-12");
+      await userBusiness.addCpf("", "821.314.228-49");
     } catch (err) {
       expect(err.errorCode).toBe(422); 
       expect(err.message).toBe("Missing Input");
@@ -46,7 +52,10 @@ describe("Testing UserBusiness.addCpf", () => {
         fullNameDatabase as any,
         birthdayDatabase as any,
         phoneNumberDatabase as any,
-        addressDatabase as any
+        addressDatabase as any,
+        amountRequestedDatabase as any,
+        endPointDataBase as any,
+        endpointOrderDatabase as any
       );
 
       await userBusiness.addCpf("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
@@ -63,8 +72,12 @@ describe("Testing UserBusiness.addCpf", () => {
 
     const findUserByCpf = jest.fn((cpf: string) => {});
     const addCpf = jest.fn((user: User) => {});
-
     cpfDatabase = { findUserByCpf, addCpf};
+
+    const findUserById = jest.fn((id: string) => true)
+    const updateEndPoint = jest.fn((actualEndpoint: string, idUserLogged: string) => {})
+    endPointDataBase = { findUserById, updateEndPoint }
+    
 
     const userBusiness = new UserBusiness(
       userDatabase as any,
@@ -75,19 +88,24 @@ describe("Testing UserBusiness.addCpf", () => {
       fullNameDatabase as any,
       birthdayDatabase as any,
       phoneNumberDatabase as any,
-      addressDatabase as any
+      addressDatabase as any,
+      amountRequestedDatabase as any,
+      endPointDataBase as any,
+      endpointOrderDatabase as any
     );
 
     const result = await userBusiness.addCpf(
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC",
-      "123.456.789-12"
+      "821.314.228-49"
     );
 
     const user = new User("id");
-    user.setCpf("123.456.789-12");
+    user.setCpf("821.314.228-49");
 
     expect(tokenVerify).toHaveBeenCalledWith("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC");
-    expect(findUserByCpf).toHaveBeenCalledWith("123.456.789-12");
+    expect(findUserByCpf).toHaveBeenCalledWith("821.314.228-49");
+    expect(findUserById).toHaveBeenCalledWith("id");
+    expect(updateEndPoint).toHaveBeenCalledWith("cpf", "id");
     expect(addCpf).toHaveBeenCalledWith(
       user
     );
@@ -112,10 +130,13 @@ describe("Testing UserBusiness.addCpf", () => {
       fullNameDatabase as any,
       birthdayDatabase as any,
       phoneNumberDatabase as any,
-      addressDatabase as any
+      addressDatabase as any,
+      amountRequestedDatabase as any,
+      endPointDataBase as any,
+      endpointOrderDatabase as any
     );
 
-    const cpf = "123.456.789-12"
+    const cpf = "821.314.228-49"
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC"
 
     const result = await userBusiness.addCpf(
@@ -126,5 +147,5 @@ describe("Testing UserBusiness.addCpf", () => {
     expect(tokenVerify).toHaveBeenCalledWith(token);
     expect(findUserByCpf).toHaveBeenCalledWith(cpf);
     expect(updateCpf).toHaveBeenCalledWith(cpf);
-  });
-})
+  }); 
+}) 
