@@ -10,6 +10,8 @@ import { BirthdayDataBase } from "../data/BirthdayDataBase";
 import { PhoneNumberDataBase } from "../data/PhoneNumberDataBase";
 import { AddressDataBase } from "../data/AdressDataBase";
 import { AmountRequestedDataBase } from "../data/AmountRequested";
+import { EndPointDataBase } from "../data/EndPointDataBase";
+import { EndPointOrderDataBase } from "../data/EndPointOrderDatabase";
 
 export class UserController {
   private static UserBusiness = new UserBusiness(
@@ -22,7 +24,9 @@ export class UserController {
     new BirthdayDataBase(),
     new PhoneNumberDataBase(),
     new AddressDataBase(),
-    new AmountRequestedDataBase()
+    new AmountRequestedDataBase(),
+    new EndPointDataBase(),
+    new EndPointOrderDataBase()
   );
 
   public async signUp(req: Request, res: Response) {
@@ -63,7 +67,7 @@ export class UserController {
         req.body.fullName
       )
 
-      res.status(200).send({ message: "Operation performed successfully"});
+      res.status(200).send({ success: true, 'next-end-point': result});
     } catch (err) {
       res.status(err.errorCode || 400).send({ message: err.message})
     }
@@ -76,7 +80,7 @@ export class UserController {
         req.body.birthday
       )
 
-      res.status(200).send({ message: "Operation performed successfully"})
+      res.status(200).send({ success: true, 'next-end-point': result});
     } catch (err) {
       res.status(err.errorCode || 400).send({ message: err.message})
     }
@@ -89,7 +93,7 @@ export class UserController {
         req.body.phoneNumber
       )
 
-      res.status(200).send({ message: "Operation performed successfully"})
+      res.status(200).send({ success: true, 'next-end-point': result});
     } catch (err) {
       res.status(err.errorCode || 400).send({ message: err.message})
     }
@@ -102,7 +106,7 @@ export class UserController {
         req.body.address
       )
 
-      res.status(200).send({ message: "Operation performed successfully"})
+      res.status(200).send({ success: true, 'next-end-point': result});
     } catch (err) {
       res.status(err.errorCode || 400).send({ message: err.message})
     }
@@ -115,7 +119,7 @@ export class UserController {
         req.body.amountRequested
       )
 
-      res.status(200).send({ message: "Operation performed successfully"})
+      res.status(200).send({ success: true, 'next-end-point': result});
 
     } catch (err) {
       res.status(err.errorCode || 400).send({ message: err.message})
