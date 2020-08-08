@@ -54,3 +54,17 @@ CREATE TABLE UserAmountRequested(
     PRIMARY KEY(amount_requested, id_user),
     FOREIGN KEY (id_user) REFERENCES Users(id)
 );
+
+CREATE TABLE UserEndpoint(
+    endpoint VARCHAR(50),
+    id_user VARCHAR(255) PRIMARY KEY,
+    FOREIGN KEY (id_user) REFERENCES Users(id)
+);
+
+CREATE TABLE UserOrderEndpoint(
+    id_user VARCHAR(255),
+    endpoint VARCHAR(50),
+    position INT,
+    PRIMARY KEY(id_user, endpoint),
+    FOREIGN KEY (id_user) REFERENCES Users(id)
+)
