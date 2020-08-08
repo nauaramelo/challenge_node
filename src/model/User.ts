@@ -6,7 +6,8 @@ export class User {
         private cpf?: string,
         private fullName?: string,
         private birthday?: string,
-        private phoneNumber?: string
+        private phoneNumber?: string,
+        private amountRequested?: number
     ) {}
 
     public getId(): string {
@@ -51,5 +52,13 @@ export class User {
 
     public setPhoneNumber(phoneNumber: string): void {
         this.phoneNumber = phoneNumber
+    }
+
+    public getAmountRequested(): number | undefined {
+        return this.amountRequested
+    }
+
+    public setAmountRequested(amountRequested: number): void {
+        this.amountRequested = amountRequested
     }
 }
