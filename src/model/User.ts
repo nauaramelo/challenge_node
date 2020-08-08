@@ -7,7 +7,9 @@ export class User {
         private fullName?: string,
         private birthday?: string,
         private phoneNumber?: string,
-        private amountRequested?: number
+        private amountRequested?: number,
+        private lastEndPointAccessed?: string,
+        private orderEndpoints?: string[]
     ) {}
 
     public getId(): string {
@@ -60,5 +62,21 @@ export class User {
 
     public setAmountRequested(amountRequested: number): void {
         this.amountRequested = amountRequested
+    }
+
+    public getLastEndPointAccessed(): string | undefined {
+        return this.lastEndPointAccessed
+    }
+
+    public setLastEndPointAccessed(lastEndPointAccessed: string): void {
+        this.lastEndPointAccessed = lastEndPointAccessed;
+    }
+
+    public getOrderEndpoints(): string[] | undefined {
+        return this.orderEndpoints
+    }
+
+    public setOrderEndpoints(orderEndpoints: string[]): void {
+        this.orderEndpoints = orderEndpoints;
     }
 }
