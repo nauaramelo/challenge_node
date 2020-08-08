@@ -10,15 +10,26 @@ import { User } from '../model/User';
 import { BirthdayDataBase } from '../data/BirthdayDataBase';
 import { PhoneNumberDataBase } from '../data/PhoneNumberDataBase';
 import { AddressDataBase } from '../data/AdressDataBase';
-import { userRouter } from '../router/UserRouter';
 import { AddressInterface } from '../interfaces/AddressInterface';
 import axios from 'axios';
 import { NotFoundError } from '../errors/NotFoundError';
 import { GenericError } from '../errors/GenericError';
 import { validate } from 'gerador-validador-cpf'
 import { AmountRequestedDataBase } from '../data/AmountRequested';
+import { EndPointDataBase } from '../data/EndPointDataBase';
+import { EndPointOrderDataBase } from '../data/EndPointOrderDatabase';
 
 export class UserBusiness {
+
+    private endPoints: string[] = [
+        'cpf',
+        'full-name',
+        'birthday',
+        'phone-number',
+        'address',
+        'amount-requested'
+    ]
+
     constructor(
         private userDataBase: UserDataBase,
         private hashGenerator: HashGenerator,
@@ -29,8 +40,34 @@ export class UserBusiness {
         private birthdayDatabase: BirthdayDataBase,
         private phoneNumbeDatabase: PhoneNumberDataBase,
         private addressDatabase: AddressDataBase,
-        private amountRequestedDatabase: AmountRequestedDataBase
+        private amountRequestedDatabase: AmountRequestedDataBase,
+        private endPointDatabase: EndPointDataBase,
+        private endpointOrderDatabase: EndPointOrderDataBase
     ){}
+
+    private getIndexEndPoint(endpoint: string | undefined, endpoints: string[]) {
+        return endpoints.findIndex((element) => element === endpoint)
+    }
+
+    private getNextEndPoint(endpoint: string, endpoints: string[]) {
+        return endpoints[this.getIndexEndPoint(endpoint, endpoints) + 1] || endpoint
+    }
+
+    private async validateOrderEndpoint(actualEndpoint: string, idUser: string, endpoints: string[]) {
+        const user = await this.endPointDatabase.findUserById(idUser)
+
+        const indexActualEndpoint = this.getIndexEndPoint(actualEndpoint, endpoints)
+        const indexLastEndpointAccessed = this.getIndexEndPoint(user?.getLastEndPointAccessed(), endpoints)
+
+        if (indexActualEndpoint - indexLastEndpointAccessed === 1 || indexActualEndpoint - indexLastEndpointAccessed === 0) {
+            await this.endPointDatabase.updateEndPoint(actualEndpoint, idUser)
+        }
+
+        if (indexActualEndpoint - indexLastEndpointAccessed > 1) {
+            throw new GenericError("Endpoint out of order")
+        }
+
+    }
 
     public async signUp(email: string, password: string) {
         
@@ -55,9 +92,13 @@ export class UserBusiness {
             new User(id, email, cryptedPassword)
         )
 
-        const token = this.tokenGenerator.generate({id})
+        this.endPoints.forEach(async (endpoint, index) => {
+            await this.endpointOrderDatabase.addEndPointOrder(endpoint, id, index);
+        })
 
-        return {token}
+        const token = this.tokenGenerator.generate({ id })
+
+        return { token }
     }
 
     public async addCpf(token: string, cpf: string) {
@@ -71,6 +112,17 @@ export class UserBusiness {
         }
         
         const idUserLogged = this.tokenGenerator.verify(token);
+
+        const hasLastEndpointAccessed = this.endPointDatabase.findUserById(idUserLogged)
+
+        if (!hasLastEndpointAccessed) {
+            await this.endPointDatabase.addEndPoint('cpf', idUserLogged)
+        }
+
+        if (hasLastEndpointAccessed) {
+            await this.endPointDatabase.updateEndPoint('cpf', idUserLogged)
+        }
+
         const verifyCpfExists = await this.cpfDataBase.findUserByCpf(cpf);
 
         if (verifyCpfExists) {
@@ -94,6 +146,10 @@ export class UserBusiness {
 
         const idUserLogged = this.tokenGenerator.verify(token);
         const verifyFullNameExists = await this.fullNameDataBase.findUserByFullName(fullName)
+        const endpoints = await this.endpointOrderDatabase.findEndpointsByIdUser(idUserLogged) as string[]
+        const actualEndpoint = 'full-name'; 
+
+        await this.validateOrderEndpoint(actualEndpoint, idUserLogged, endpoints)
 
         if (verifyFullNameExists) {
             await this.fullNameDataBase.updateFullName(fullName)
@@ -106,6 +162,8 @@ export class UserBusiness {
 
             await this.fullNameDataBase.addFullName(user)
         }
+
+        return this.getNextEndPoint(actualEndpoint, endpoints)
     }
 
     public async addBirthday(token: string, birthday: string) {
@@ -116,6 +174,10 @@ export class UserBusiness {
 
         const idUserLogged = this.tokenGenerator.verify(token);
         const verifyBirthdayExists = await this.birthdayDatabase.findUserByBirthday(birthday)
+        const actualEndpoint = 'birthday';
+        const endpoints = await this.endpointOrderDatabase.findEndpointsByIdUser(idUserLogged) as string[]
+
+        await this.validateOrderEndpoint(actualEndpoint, idUserLogged, endpoints)
 
         if (verifyBirthdayExists) {
             await this.birthdayDatabase.updateBirthday(birthday)
@@ -128,6 +190,8 @@ export class UserBusiness {
 
             await this.birthdayDatabase.addBirthday(user)
         }
+
+        return this.getNextEndPoint(actualEndpoint, endpoints)
     }
 
     public async addPhoneNumber(token: string, phoneNumber: string) {
@@ -138,6 +202,10 @@ export class UserBusiness {
 
         const idUserLogged = this.tokenGenerator.verify(token);
         const verifyPhoneNumberExists = await this.phoneNumbeDatabase.findUserByPhoneNumber(phoneNumber)
+        const endpoints = await this.endpointOrderDatabase.findEndpointsByIdUser(idUserLogged) as string[]
+        const actualEndpoint = 'phone-number';
+
+        await this.validateOrderEndpoint(actualEndpoint, idUserLogged, endpoints)
 
         if (verifyPhoneNumberExists) {
             await this.phoneNumbeDatabase.updatePhoneNumber(phoneNumber)
@@ -150,6 +218,8 @@ export class UserBusiness {
 
             await this.phoneNumbeDatabase.addPhoneNumber(user)
         }
+
+        return this.getNextEndPoint(actualEndpoint, endpoints)
     }
 
     public async addAddress(token: string, address: AddressInterface) {
@@ -172,10 +242,6 @@ export class UserBusiness {
             throw new NotFoundError("CEP not exist")
         }
 
-        if (responseWsCep.data.cep != address.cep) {
-            throw new NotFoundError("CEP not found")
-        }
-
         if (responseWsCep.data.logradouro != address.street) {
             throw new GenericError("Invalid Street")
         }
@@ -190,6 +256,10 @@ export class UserBusiness {
 
         const idUserLogged = this.tokenGenerator.verify(token);
         const hasUserRegistred = await this.addressDatabase.findUserByAddress(address)
+        const endpoints = await this.endpointOrderDatabase.findEndpointsByIdUser(idUserLogged) as string[]
+        const actualEndpoint = 'address';
+
+        await this.validateOrderEndpoint(actualEndpoint, idUserLogged, endpoints)
 
         if (hasUserRegistred) {
             await this.addressDatabase.updateAddress(address)
@@ -199,6 +269,7 @@ export class UserBusiness {
             await this.addressDatabase.addAddress(idUserLogged, address)
         }
         
+        return this.getNextEndPoint(actualEndpoint, endpoints)
     }
 
     public async addAmountRequest(token: string, amountRequested: number) {
@@ -208,6 +279,11 @@ export class UserBusiness {
 
         const idUserLogged = this.tokenGenerator.verify(token);
         const hasUserRegistred = await this.amountRequestedDatabase.findUserByAmountRequested(amountRequested, idUserLogged);
+        const endpoints = await this.endpointOrderDatabase.findEndpointsByIdUser(idUserLogged) as string[]
+
+        const actualEndpoint = 'amount-requested';
+
+        await this.validateOrderEndpoint(actualEndpoint, idUserLogged, endpoints)
 
         if (hasUserRegistred){
             await this.amountRequestedDatabase.updateAmountRequested(amountRequested, idUserLogged)
@@ -221,5 +297,8 @@ export class UserBusiness {
             await this.amountRequestedDatabase.addAmountRequested(user)
         }
 
+        const nextEndpoint = this.getNextEndPoint(actualEndpoint, endpoints)
+
+        return nextEndpoint === actualEndpoint ? actualEndpoint : nextEndpoint
     }
 }
