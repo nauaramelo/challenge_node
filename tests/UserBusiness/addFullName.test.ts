@@ -1,5 +1,6 @@
 import { UserBusiness } from "../../src/business/UserBusiness";
 import { User } from "../../src/model/User";
+import { compareSync } from "bcryptjs";
 
 
 describe("Testing UserBusiness.addFullName", () => {
@@ -11,7 +12,10 @@ describe("Testing UserBusiness.addFullName", () => {
   let fullNameDatabase = {};
   let birthdayDatabase = {};
   let phoneNumberDatabase = {};
-  let addressDatabase = {}
+  let addressDatabase = {};
+  let amountRequestedDatabase = {};
+  let endPointDataBase = {}; 
+  let endpointOrderDatabase = {}
  
   test("Should return 'Missing input' for empty token", async () => {
     expect.assertions(2); 
@@ -25,7 +29,10 @@ describe("Testing UserBusiness.addFullName", () => {
         fullNameDatabase as any,
         birthdayDatabase as any,
         phoneNumberDatabase as any,
-        addressDatabase as any
+        addressDatabase as any,
+        amountRequestedDatabase as any,
+        endPointDataBase as any,
+        endpointOrderDatabase as any
       );
 
       await userBusiness.addFullName("", "João das Neves");
@@ -47,7 +54,10 @@ describe("Testing UserBusiness.addFullName", () => {
         fullNameDatabase as any,
         birthdayDatabase as any,
         phoneNumberDatabase as any,
-        addressDatabase as any
+        addressDatabase as any,
+        amountRequestedDatabase as any,
+        endPointDataBase as any,
+        endpointOrderDatabase as any
       );
 
       await userBusiness.addFullName("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
@@ -67,6 +77,20 @@ describe("Testing UserBusiness.addFullName", () => {
 
     fullNameDatabase = { findUserByFullName, addFullName};
 
+    const findEndpointsByIdUser = jest.fn((idUserLogged: string) => [])
+    endpointOrderDatabase = { findEndpointsByIdUser }
+
+    const validateOrderEndpoint = jest.fn((actualEndpoint: string, idUserLogged: string, endpoints: string[]) => Promise.resolve())
+
+    const findUserById = jest.fn((idUser: string) => {
+      const user = new User("id")
+      user.setLastEndPointAccessed("full-name")
+    })
+
+    const updateEndPoint = jest.fn((actualEndpoint: string, idUser: string) => {})
+
+    endPointDataBase = { findUserById, updateEndPoint}
+
     const userBusiness = new UserBusiness(
       userDatabase as any,
       hashGenerator as any,
@@ -76,7 +100,10 @@ describe("Testing UserBusiness.addFullName", () => {
       fullNameDatabase as any,
       birthdayDatabase as any,
       phoneNumberDatabase as any,
-      addressDatabase as any
+      addressDatabase as any,
+      amountRequestedDatabase as any,
+      endPointDataBase as any,
+      endpointOrderDatabase as any
     );
 
     const result = await userBusiness.addFullName(
@@ -102,7 +129,21 @@ describe("Testing UserBusiness.addFullName", () => {
     const findUserByFullName = jest.fn((fullName: string) => new User("id"));
     const updateFullName = jest.fn((fullName: string) => {});
 
-    fullNameDatabase = { findUserByFullName, updateFullName };
+    fullNameDatabase = { findUserByFullName, updateFullName};
+
+    const findEndpointsByIdUser = jest.fn((idUserLogged: string) => [])
+    endpointOrderDatabase = { findEndpointsByIdUser }
+
+    const validateOrderEndpoint = jest.fn((actualEndpoint: string, idUserLogged: string, endpoints: string[]) => Promise.resolve())
+
+    const findUserById = jest.fn((idUser: string) => {
+      const user = new User("id")
+      user.setLastEndPointAccessed("full-name")
+    })
+
+    const updateEndPoint = jest.fn((actualEndpoint: string, idUser: string) => {})
+
+    endPointDataBase = { findUserById, updateEndPoint}
 
     const userBusiness = new UserBusiness(
       userDatabase as any,
@@ -113,7 +154,10 @@ describe("Testing UserBusiness.addFullName", () => {
       fullNameDatabase as any,
       birthdayDatabase as any,
       phoneNumberDatabase as any,
-      addressDatabase as any
+      addressDatabase as any,
+      amountRequestedDatabase as any,
+      endPointDataBase as any,
+      endpointOrderDatabase as any
     );
 
     const fullName = "João das Neves"
@@ -127,5 +171,5 @@ describe("Testing UserBusiness.addFullName", () => {
     expect(tokenVerify).toHaveBeenCalledWith(token);
     expect(findUserByFullName).toHaveBeenCalledWith(fullName);
     expect(updateFullName).toHaveBeenCalledWith(fullName);
-  }); 
-})
+  });
+}) 

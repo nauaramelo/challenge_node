@@ -11,7 +11,10 @@ describe("Testing UserBusiness.addBirthday", () => {
   let fullNameDatabase = {};
   let birthdayDatabase = {};
   let phoneNumberDatabase = {};
-  let addressDatabase = {}
+  let addressDatabase = {};
+  let amountRequestedDatabase = {}
+  let endPointDataBase = {};
+  let endpointOrderDatabase = {}
  
   test("Should return 'Missing input' for empty token", async () => {
     expect.assertions(2); 
@@ -25,7 +28,10 @@ describe("Testing UserBusiness.addBirthday", () => {
         fullNameDatabase as any,
         birthdayDatabase as any,
         phoneNumberDatabase as any,
-        addressDatabase as any
+        addressDatabase as any,
+        amountRequestedDatabase as any,
+        endPointDataBase as any,
+        endpointOrderDatabase as any
       );
 
       await userBusiness.addBirthday("", "01/10/1991");
@@ -47,7 +53,10 @@ describe("Testing UserBusiness.addBirthday", () => {
         fullNameDatabase as any,
         birthdayDatabase as any,
         phoneNumberDatabase as any,
-        addressDatabase as any
+        addressDatabase as any,
+        amountRequestedDatabase as any,
+        endPointDataBase as any,
+        endpointOrderDatabase as any
       );
 
       await userBusiness.addBirthday("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC", "");
@@ -68,6 +77,20 @@ describe("Testing UserBusiness.addBirthday", () => {
 
     birthdayDatabase = { findUserByBirthday, addBirthday};
 
+    const findEndpointsByIdUser = jest.fn((idUserLogged: string) => [])
+    endpointOrderDatabase = { findEndpointsByIdUser }
+
+    const validateOrderEndpoint = jest.fn((actualEndpoint: string, idUserLogged: string, endpoints: string[]) => Promise.resolve())
+
+    const findUserById = jest.fn((idUser: string) => {
+      const user = new User("id")
+      user.setLastEndPointAccessed("birthday")
+    })
+
+    const updateEndPoint = jest.fn((actualEndpoint: string, idUser: string) => {})
+
+    endPointDataBase = { findUserById, updateEndPoint}
+
     const userBusiness = new UserBusiness(
       userDatabase as any,
       hashGenerator as any,
@@ -77,7 +100,10 @@ describe("Testing UserBusiness.addBirthday", () => {
       fullNameDatabase as any,
       birthdayDatabase as any,
       phoneNumberDatabase as any,
-      addressDatabase as any
+      addressDatabase as any,
+      amountRequestedDatabase as any,
+      endPointDataBase as any,
+      endpointOrderDatabase as any
     );
 
     const result = await userBusiness.addBirthday(
@@ -105,6 +131,20 @@ describe("Testing UserBusiness.addBirthday", () => {
 
     birthdayDatabase = { findUserByBirthday, updateBirthday };
 
+    const findEndpointsByIdUser = jest.fn((idUserLogged: string) => [])
+    endpointOrderDatabase = { findEndpointsByIdUser }
+
+    const validateOrderEndpoint = jest.fn((actualEndpoint: string, idUserLogged: string, endpoints: string[]) => Promise.resolve())
+
+    const findUserById = jest.fn((idUser: string) => {
+      const user = new User("id")
+      user.setLastEndPointAccessed("birthday")
+    })
+
+    const updateEndPoint = jest.fn((actualEndpoint: string, idUser: string) => {})
+
+    endPointDataBase = { findUserById, updateEndPoint}
+
     const userBusiness = new UserBusiness(
       userDatabase as any,
       hashGenerator as any,
@@ -114,7 +154,10 @@ describe("Testing UserBusiness.addBirthday", () => {
       fullNameDatabase as any,
       birthdayDatabase as any,
       phoneNumberDatabase as any,
-      addressDatabase as any
+      addressDatabase as any,
+      amountRequestedDatabase as any,
+      endPointDataBase as any,
+      endpointOrderDatabase as any
     );
 
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZC"

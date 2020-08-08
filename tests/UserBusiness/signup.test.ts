@@ -1,6 +1,5 @@
 import { UserBusiness } from "../../src/business/UserBusiness";
 import { User } from "../../src/model/User";
-import { AddressDataBase } from "../../src/data/AdressDataBase";
 
 describe("Testing UserBusiness.signup", () => {
   let userDatabase = {};
@@ -11,7 +10,10 @@ describe("Testing UserBusiness.signup", () => {
   let fullNameDatabase = {};
   let birthdayDatabase = {};
   let phoneNumberDatabase = {};
-  let addressDatabase = {}
+  let addressDatabase = {};
+  let amountRequestedDatabase = {}
+  let endPointDataBase = {};
+  let endpointOrderDatabase = {}
 
   test("Should return 'Missing input' for empty email", async () => {
     expect.assertions(2);
@@ -25,7 +27,10 @@ describe("Testing UserBusiness.signup", () => {
         fullNameDatabase as any,
         birthdayDatabase as any,
         phoneNumberDatabase as any,
-        addressDatabase as any
+        addressDatabase as any,
+        amountRequestedDatabase as any,
+        endPointDataBase as any,
+        endpointOrderDatabase as any
       );
 
       await userBusiness.signUp("", "123456");
@@ -47,7 +52,10 @@ describe("Testing UserBusiness.signup", () => {
         fullNameDatabase as any,
         birthdayDatabase as any,
         phoneNumberDatabase as any,
-        addressDatabase as any
+        addressDatabase as any,
+        amountRequestedDatabase as any,
+        endPointDataBase as any,
+        endpointOrderDatabase as any
       );
 
       await userBusiness.signUp("joaodasneves@gmail.com", "",);
@@ -69,7 +77,10 @@ describe("Testing UserBusiness.signup", () => {
         fullNameDatabase as any,
         birthdayDatabase as any,
         phoneNumberDatabase as any,
-        addressDatabase as any
+        addressDatabase as any,
+        amountRequestedDatabase as any,
+        endPointDataBase as any,
+        endpointOrderDatabase as any
       );
 
       await userBusiness.signUp(
@@ -107,7 +118,10 @@ describe("Testing UserBusiness.signup", () => {
       fullNameDatabase as any,
       birthdayDatabase as any,
       phoneNumberDatabase as any,
-      addressDatabase as any
+      addressDatabase as any,
+      amountRequestedDatabase as any,
+      endPointDataBase as any,
+      endpointOrderDatabase as any
     );
 
     const result = await userBusiness.signUp(
@@ -128,4 +142,4 @@ describe("Testing UserBusiness.signup", () => {
       )
     );
   });
-});
+}); 

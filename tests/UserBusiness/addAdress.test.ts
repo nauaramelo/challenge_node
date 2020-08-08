@@ -12,7 +12,10 @@ describe("Testing UserBusiness.addAddress", () => {
   let fullNameDatabase = {};
   let birthdayDatabase = {};
   let phoneNumberDatabase = {};
-  let addressDatabase = {}
+  let addressDatabase = {};
+  let amountRequestedDatabase = {}
+  let endPointDataBase = {}; 
+  let endpointOrderDatabase = {}
  
   test("Should add Address", async () => {
 
@@ -24,6 +27,21 @@ describe("Testing UserBusiness.addAddress", () => {
 
     addressDatabase = { findUserByAddress, addAddress};
 
+    const findEndpointsByIdUser = jest.fn((idUserLogged: string) => [])
+    endpointOrderDatabase = { findEndpointsByIdUser }
+
+    const validateOrderEndpoint = jest.fn((actualEndpoint: string, idUserLogged: string, endpoints: string[]) => Promise.resolve())
+
+    const findUserById = jest.fn((idUser: string) => {
+      const user = new User("id")
+      user.setLastEndPointAccessed("full-name")
+    })
+
+    const updateEndPoint = jest.fn((actualEndpoint: string, idUser: string) => {})
+
+    endPointDataBase = { findUserById, updateEndPoint}
+
+
     const userBusiness = new UserBusiness(
       userDatabase as any,
       hashGenerator as any,
@@ -33,15 +51,18 @@ describe("Testing UserBusiness.addAddress", () => {
       fullNameDatabase as any,
       birthdayDatabase as any,
       phoneNumberDatabase as any,
-      addressDatabase as any
+      addressDatabase as any,
+      amountRequestedDatabase as any,
+      endPointDataBase as any,
+      endpointOrderDatabase as any
     );  
 
     const address = {
         number: 1,
-        state: "Rio de Janeiro",
-        city: "Rio de Janeiro",
-        street: "Rua Amarela",
-        cep: "12345678",
+        state: "PB",
+        city: "João Pessoa",
+        street: "Rua Lucinéia Cabral Batista",
+        cep: "58030120",
         complement: "Pé de jambo no quintal"
     } as AddressInterface
 
@@ -54,4 +75,4 @@ describe("Testing UserBusiness.addAddress", () => {
       expect(findUserByAddress).toHaveBeenCalledWith(address);
       expect(addAddress).toHaveBeenCalledWith("id", address);  
     });
-}) 
+})
