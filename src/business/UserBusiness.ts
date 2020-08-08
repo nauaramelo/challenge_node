@@ -16,6 +16,7 @@ import axios from 'axios';
 import { NotFoundError } from '../errors/NotFoundError';
 import { GenericError } from '../errors/GenericError';
 import { validate } from 'gerador-validador-cpf'
+import { AmountRequestedDataBase } from '../data/AmountRequested';
 
 export class UserBusiness {
     constructor(
@@ -27,7 +28,8 @@ export class UserBusiness {
         private fullNameDataBase: FullNameDataBase,
         private birthdayDatabase: BirthdayDataBase,
         private phoneNumbeDatabase: PhoneNumberDataBase,
-        private addressDatabase: AddressDataBase
+        private addressDatabase: AddressDataBase,
+        private amountRequestedDatabase: AmountRequestedDataBase
     ){}
 
     public async signUp(email: string, password: string) {
@@ -197,5 +199,27 @@ export class UserBusiness {
             await this.addressDatabase.addAddress(idUserLogged, address)
         }
         
+    }
+
+    public async addAmountRequest(token: string, amountRequested: number) {
+        if (!token || !amountRequested) {
+            throw new InvalidParameterError("Missing Input");
+        }
+
+        const idUserLogged = this.tokenGenerator.verify(token);
+        const hasUserRegistred = await this.amountRequestedDatabase.findUserByAmountRequested(amountRequested, idUserLogged);
+
+        if (hasUserRegistred){
+            await this.amountRequestedDatabase.updateAmountRequested(amountRequested, idUserLogged)
+        }
+
+        if (!hasUserRegistred){
+            const user = new User(idUserLogged)
+
+            user.setAmountRequested(amountRequested)
+
+            await this.amountRequestedDatabase.addAmountRequested(user)
+        }
+
     }
 }
